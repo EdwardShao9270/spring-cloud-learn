@@ -13,9 +13,6 @@ import feign.Param;
 import feign.Response;
 import feign.codec.Decoder;
 import feign.hystrix.HystrixFeign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import feign.ribbon.RibbonClient;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -79,11 +76,18 @@ public class TestController {
                 .decoder(new Decoder.Default())
                 .encoder(new JacksonEncoder()).target(AccountImgService.class, "http://fa-account-api");*/
 
+        System.out.println("1111111111111111111111");
 
         Response response = accountImgService.getImg1(userName);
+
+        System.out.println("1111111111111111111111");
+
+
         FileOutputStream ops1 = new FileOutputStream(new File("E://log//666.jpg"));
+
         InputStream in = response.body().asInputStream();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        /*ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] data = new byte[1024];
         int count = -1;
         while((count = in.read(data,0,1024)) != -1){
@@ -91,7 +95,7 @@ public class TestController {
         }
         output.close();
 
-        byte[] resultByte = output.toByteArray();
+        byte[] resultByte = output.toByteArray();*/
 
 
         byte buffer[] = new byte[1024];
@@ -108,8 +112,10 @@ public class TestController {
     @ResponseBody
     public Map<String,Object> statusTest(@RequestParam("userName") String userName) throws IOException {
         Map<String,Object> result = Maps.newHashMap();
+        System.out.println("000000000000000000000000");
 
         System.out.println(accountImgTest.getStatusByUserName(userName));
+        System.out.println("000000000000000000");
 
         result.put("result","ok");
         return result;

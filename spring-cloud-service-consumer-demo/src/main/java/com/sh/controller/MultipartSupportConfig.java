@@ -1,7 +1,7 @@
-package com.sh.config;
+package com.sh.controller;
 
+import com.sh.config.FeignSpringFormEncoder;
 import feign.Contract;
-import org.springframework.cloud.netflix.feign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import feign.codec.Encoder;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Scope;
  * @Description:
  * @Date: Created in 19:18 2018/12/10
  */
-@Configuration
+
 public class MultipartSupportConfig {
 
     @Bean
@@ -29,7 +29,7 @@ public class MultipartSupportConfig {
     }
 
     @Bean
-    public Contract feignContract() {
-        return new Contract.Default();
+        public Contract feignContract() {
+            return new Contract.Default();
     }
 }

@@ -1,18 +1,12 @@
 package com.sh.service;
 
-import com.sh.config.MultipartSupportConfig;
+import com.sh.controller.MultipartSupportConfig;
 import com.sh.model.AccountImg;
-import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import feign.Response;
-import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
 
 
 /**
@@ -20,7 +14,8 @@ import java.util.Map;
  * @Description:
  * @Date: Created in 14:43 2018/12/7
  */
-@FeignClient(name = "faAccountData",  configuration = MultipartSupportConfig.class, path = "/accountImg")
+@FeignClient(value = "faAccountData",  configuration = {MultipartSupportConfig.class}, fallbackFactory = HystrixFactory.class, path = "/accountImg")
+//@Qualifier("accountImgService")
 public interface AccountImgService {
 
 /*

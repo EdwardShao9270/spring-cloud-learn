@@ -1,20 +1,10 @@
 package com.sh.service;
 
 import com.sh.model.AccountImg;
-import feign.Param;
 import feign.Response;
 import feign.hystrix.FallbackFactory;
-import feign.hystrix.HystrixFeign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-import feign.ribbon.RibbonClient;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Author: bjshaohang
