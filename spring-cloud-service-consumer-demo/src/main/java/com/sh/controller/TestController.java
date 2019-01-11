@@ -3,6 +3,7 @@ package com.sh.controller;
 import com.google.common.collect.Maps;
 import com.netflix.ribbon.Ribbon;
 import com.sh.config.FeignSpringFormEncoder;
+import com.sh.model.AccountChgLog;
 import com.sh.model.AccountImg;
 import com.sh.service.AccountImgService;
 import com.sh.service.AccountImgTest;
@@ -17,10 +18,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -42,7 +40,7 @@ public class TestController {
     @Autowired
     AccountImgTest accountImgTest;
 
-    @RequestMapping("/test")
+    @RequestMapping("/insert")
     @ResponseBody
     public Map<String,Object> test(@RequestParam("userName") String userName) throws IOException {
         Map<String,Object> resultMap = Maps.newHashMap();
@@ -53,52 +51,39 @@ public class TestController {
         accountImg.setFileType("C");
         byte[] image = getBytes("E:\\log\\111.jpg");
 
-
+        byte[] image2 = getBytes("E:\\log\\222.jpg");
         MockMultipartFile file1 = new MockMultipartFile("file1", "111.jpg", null, image);
 
+        MockMultipartFile file2 = new MockMultipartFile("file2", "222.jpg", null, image2);
 
 /*        AccountImgService accountImgService = HystrixFeign.builder().client(RibbonClient.create())
                 .decoder(new JacksonDecoder())
                 .encoder(new FeignSpringFormEncoder()).target(AccountImgService.class, "http://fa-account-api", (file, file2, accountImg1) -> false);*/
-        accountImgService.insert(file1,file1,accountImg);
+        accountImgService.insert(file1,file2,accountImg);
         resultMap.put("data",accountImg);
         return resultMap;
-
     }
 
-    @RequestMapping("/byte")
+    @RequestMapping("/getImg1")
     @ResponseBody
-    public Map<String,Object> byteTest(@RequestParam("userName") String userName) throws IOException {
-
+    public Map<String,Object> getImg1(@RequestParam("userName") String userName) throws IOException {
         Map<String,Object> result = Maps.newHashMap();
 
 /*        AccountImgService accountImgService = Feign.builder().client(RibbonClient.create())
                 .decoder(new Decoder.Default())
                 .encoder(new JacksonEncoder()).target(AccountImgService.class, "http://fa-account-api");*/
 
-        System.out.println("1111111111111111111111");
 
         Response response = accountImgService.getImg1(userName);
 
-        System.out.println("1111111111111111111111");
 
 
-        FileOutputStream ops1 = new FileOutputStream(new File("E://log//666.jpg"));
+        FileOutputStream ops1 = new FileOutputStream(new File("E://log//6666.jpg"));
 
         InputStream in = response.body().asInputStream();
 
-        /*ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        int count = -1;
-        while((count = in.read(data,0,1024)) != -1){
-            output.write(data, 0, count);
-        }
-        output.close();
 
-        byte[] resultByte = output.toByteArray();*/
-
-
-        byte buffer[] = new byte[1024];
+        byte[] buffer = new byte[1024];
         int length = 0;
         while ((length = in.read(buffer)) >= 0){
             ops1.write(buffer,0,length);
@@ -108,16 +93,82 @@ public class TestController {
         return result;
     }
 
+    @RequestMapping("/getImg2")
+    @ResponseBody
+    public Map<String,Object> getImg2(@RequestParam("userName") String userName) throws IOException {
+        Map<String,Object> result = Maps.newHashMap();
+        AccountImg accountImg = new AccountImg();
+        accountImg.setUserName(userName);
+        accountImg.setStatus(3);
+        accountImg.setFileType("C");
+
+        AccountChgLog accountChgLog = new AccountChgLog();
+        accountChgLog.setFirmId("111111111111111111");
+
+        Response response = accountImgService.getImg2(userName,accountImg,accountChgLog);
+
+        FileOutputStream ops1 = new FileOutputStream(new File("E://log//7777.jpg"));
+
+        InputStream in = response.body().asInputStream();
+
+
+        byte[] buffer = new byte[1024];
+        int length = 0;
+        while ((length = in.read(buffer)) >= 0){
+            ops1.write(buffer,0,length);
+        }
+        ops1.close();
+        result.put("result","ok");
+        return result;
+    }
+
+
     @RequestMapping("/status")
     @ResponseBody
     public Map<String,Object> statusTest(@RequestParam("userName") String userName) throws IOException {
         Map<String,Object> result = Maps.newHashMap();
-        System.out.println("000000000000000000000000");
 
-        System.out.println(accountImgTest.getStatusByUserName(userName));
-        System.out.println("000000000000000000");
+        System.out.println(accountImgService.getStatusByUserName(userName));
 
-        result.put("result","ok");
+        result.put("result",accountImgService.getStatusByUserName(userName));
+        return result;
+    }
+
+    @RequestMapping("/fileName1-fileName2-hhtStatus")
+    @ResponseBody
+    public Map<String,Object> queryAccountImageByName(@RequestParam("userName") String userName) throws IOException {
+        Map<String,Object> result = Maps.newHashMap();
+
+        System.out.println(accountImgService.queryAccountImageByName(userName));
+
+        result.put("result",accountImgService.queryAccountImageByName(userName));
+        return result;
+    }
+
+
+    @GetMapping("/put/status")
+    @ResponseBody
+    public Map<String,Object> updateStatus(@RequestParam("userName") String userName) throws IOException {
+        Map<String,Object> result = Maps.newHashMap();
+
+        accountImgService.updateStatus(userName,10);
+
+        result.put("result",accountImgService.getStatusByUserName(userName));
+        return result;
+    }
+
+    @GetMapping("/put/fileName1-fileName2-hhtStatus")
+    @ResponseBody
+    public Map<String,Object> updateHhtFilenameAndHhtStatus(@RequestParam("userName") String userName) throws IOException {
+        Map<String,Object> result = Maps.newHashMap();
+        AccountImg accountImg = new AccountImg();
+        accountImg.setUserName(userName);
+        accountImg.setHhtFileName1("test1.jpg");
+        accountImg.setHhtFilename2("test2.jpg");
+        accountImg.setHhtStatus(88);
+        accountImgService.updateHhtFilenameAndHhtStatus(accountImg);
+
+        result.put("result",accountImgService.queryAccountImageByName(userName));
         return result;
     }
 

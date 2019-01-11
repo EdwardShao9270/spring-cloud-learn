@@ -1,5 +1,6 @@
 package com.sh.service;
 
+import com.sh.model.AccountChgLog;
 import com.sh.model.AccountImg;
 import feign.Response;
 import feign.hystrix.FallbackFactory;
@@ -18,6 +19,8 @@ public class HystrixFactory implements FallbackFactory<AccountImgService> {
     public AccountImgService create(Throwable throwable) {
 
        return new AccountImgService(){
+
+
            @Override
            public boolean insert(MultipartFile file, MultipartFile file2, AccountImg accountImg) {
                return false;
@@ -26,6 +29,31 @@ public class HystrixFactory implements FallbackFactory<AccountImgService> {
            @Override
            public Response getImg1(String userName) {
                return null;
+           }
+
+           @Override
+           public Response getImg2(String userName, AccountImg accountImg, AccountChgLog accountChgLog) {
+               return null;
+           }
+
+           @Override
+           public Integer getStatusByUserName(String userName) {
+               return null;
+           }
+
+           @Override
+           public AccountImg queryAccountImageByName(String userName) {
+               return null;
+           }
+
+           @Override
+           public void updateStatus(String userName, int status) {
+
+           }
+
+           @Override
+           public void updateHhtFilenameAndHhtStatus(AccountImg accountImg) {
+
            }
        };
     }

@@ -1,11 +1,16 @@
 package com.sh.service;
 
-import com.sh.controller.MultipartSupportConfig;
+import com.sh.config.FeignConfiguration;
+import com.sh.config.MultipartSupportConfig;
+import com.sh.model.Account;
+import com.sh.model.AccountChgLog;
 import com.sh.model.AccountImg;
 import feign.Param;
 import feign.RequestLine;
 import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -14,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Description:
  * @Date: Created in 14:43 2018/12/7
  */
-@FeignClient(value = "faAccountData",  configuration = {MultipartSupportConfig.class}, fallbackFactory = HystrixFactory.class, path = "/accountImg")
+@FeignClient(value = "faAccountData",  configuration = {MultipartSupportConfig.class}, path = "/accountImg")
 //@Qualifier("accountImgService")
 public interface AccountImgService {
 
@@ -35,4 +40,20 @@ public interface AccountImgService {
 
     @RequestLine("GET /getImg1?userName={userName}")
     Response getImg1(@Param("userName") String userName);
-}
+
+    @RequestLine("POST /getImg2?userName={userName}")
+    Response getImg2(@Param("userName") String userName, @Param("accountImg")AccountImg accountImg, @Param("accountChgLog")AccountChgLog accountChgLog);
+
+    @RequestLine("GET /status?userName={userName}")
+    Integer getStatusByUserName(@Param("userName") String  userName);
+
+    @RequestLine("GET /fileName1-fileName2-hhtStatus?userName={userName}")
+    AccountImg queryAccountImageByName(@Param("userName") String  userName);
+
+    @RequestLine("PUT /status?userName={userName}&status={status}")
+    void updateStatus(@Param("userName") String userName, @Param("status") int status);
+
+    @RequestLine("PUT /hhtFileName1-hhtFileName2-hhtStatus")
+    void updateHhtFilenameAndHhtStatus(@RequestBody AccountImg accountImg);
+
+    }
