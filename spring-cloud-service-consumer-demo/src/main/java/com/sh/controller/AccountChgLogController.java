@@ -26,7 +26,8 @@ public class AccountChgLogController {
     @ResponseBody
     public Map<String,Object> insert()  {
         Map<String,Object> result = Maps.newHashMap();
-        System.out.println("test");
+
+
         result.put("result", accountChgLogService.queryAccountChgLogByTypeAndFirmId(AccountChgTypeEnum.QUICK_SING_AND_IN,"linyuchenp007@163.com","hht",null));
         return result;
     }
